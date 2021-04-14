@@ -1,4 +1,5 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
+
 const Statistic = ({text,value,last})=>(
   <tr>
     <td>{text}</td><td>{value}</td>
@@ -33,6 +34,7 @@ const Button = ({handleClick,text}) => (
 
 const App = () => {
   const [selected, setSelected] = useState(0)
+  const [selectedMax, setSelectedMaxVotes] = useState(0)
   const [points,setPoints] = useState([0,0,0,0,0,0]);
 
   const anecdotes = [
@@ -43,21 +45,45 @@ const App = () => {
     'Premature optimization is the root of all evil.',
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
   ]
+  const checkMax = ()=>{
+    let mx = 0,mx_ind = 0,i;
+    for(i = 0 ; i < 6;i++)
+    {
+      if(points[i] > mx)
+      {
+        mx = points[i];
+        mx_ind = i;
+      }
+    }
+    setSelectedMaxVotes(mx_ind);
+  }
   const handleClick = e =>{
     console.log((Math.random()*10).toFixed(0)%6);
     setSelected((Math.random()*10).toFixed(0)%6);
   }
   const addVote = ()=>{
     setPoints({...points,[selected]:points[selected]+1});
+    
     console.log(points);
   }
+  useEffect(() => {
+    checkMax(points);
+  }, [points])
+  
+  //console.log(points.reduce((acc,index)=> Math.max(acc,index),0));
   return (
     <div>
-      {anecdotes[selected]}  has {points[selected]} Votes
+      <h1> Anecdote of the Day</h1>
+      {anecdotes[selected]}  
+      <p>has {points[selected]} Votes</p>
+      
       <div>
         <button onClick={addVote}>Vote </button>
         <button onClick={handleClick}>Next Anecdote </button>
       </div>
+      <h1> Anecdote with most votes </h1>
+      {anecdotes[selectedMax]}
+      <p>has {points[selectedMax]} votes </p> 
     </div>
     
   )
