@@ -33,6 +33,8 @@ const Button = ({handleClick,text}) => (
 
 const App = () => {
   const [selected, setSelected] = useState(0)
+  const [points,setPoints] = useState([0,0,0,0,0,0]);
+
   const anecdotes = [
     'If it hurts, do it more often',
     'Adding manpower to a late software project makes it later!',
@@ -45,10 +47,15 @@ const App = () => {
     console.log((Math.random()*10).toFixed(0)%6);
     setSelected((Math.random()*10).toFixed(0)%6);
   }
+  const addVote = ()=>{
+    setPoints({...points,[selected]:points[selected]+1});
+    console.log(points);
+  }
   return (
     <div>
-      {anecdotes[selected]}
+      {anecdotes[selected]}  has {points[selected]} Votes
       <div>
+        <button onClick={addVote}>Vote </button>
         <button onClick={handleClick}>Next Anecdote </button>
       </div>
     </div>
