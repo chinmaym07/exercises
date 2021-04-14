@@ -3,12 +3,16 @@ import React,{useState} from 'react'
 const Statistics = ({good,neutral,bad})=> (
   <div>
     <h1>Statistics</h1>
-    <p>Good {good}</p>
-    <p>Neutral {neutral}</p>
-    <p>Bad {bad}</p>
-    <p>all {good+neutral+bad}</p>
-    <p>average {(good-bad)/(good+neutral+bad)}</p>
-    <p>positive {(good)/(good+neutral+bad)} %</p>
+    {
+      good+neutral+bad?<div>
+      <p>Good {good}</p>
+      <p>Neutral {neutral}</p>
+      <p>Bad {bad}</p>
+      <p>all {good+neutral+bad}</p>
+      <p>average {(good-bad)/(good+neutral+bad)}</p>
+      <p>positive {(good)/(good+neutral+bad)} %</p>
+    </div>:<p>No Feedback Given</p>
+    }
   </div>
 )
 
