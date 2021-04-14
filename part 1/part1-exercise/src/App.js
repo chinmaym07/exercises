@@ -1,6 +1,9 @@
 import React,{useState} from 'react'
-const Statistic = ({text,value})=>(
-  <p>{text} {value}</p>
+const Statistic = ({text,value,last})=>(
+  <tr>
+    <td>{text}</td><td>{value}</td>
+    {last?<td>{last}</td>:null}
+  </tr>
 )
 
 const Statistics = ({good,neutral,bad})=> (
@@ -8,12 +11,16 @@ const Statistics = ({good,neutral,bad})=> (
     <h1>Statistics</h1>
     {
       good+neutral+bad?<div>
-      <Statistic text="Good" value={good} />
-      <Statistic text="Neutral" value={neutral} />
-      <Statistic text="Bad" value={bad} />
-      <Statistic text="All" value={good+neutral+bad} />
-      <Statistic text="Average" value={(good-bad)/(good+neutral+bad)} />
-      <Statistic text="Positive" value={(good)/(good+neutral+bad)} />
+      <table>
+      <tbody>
+        <Statistic text="Good" value={good} />
+        <Statistic text="Neutral" value={neutral} />
+        <Statistic text="Bad" value={bad} />
+        <Statistic text="All" value={good+neutral+bad} />
+        <Statistic text="Average" value={((good-bad)/(good+neutral+bad)).toFixed(1)} />
+        <Statistic text="Positive" value={((good*100)/(good+neutral+bad)).toFixed(1)} last="%" />
+        </tbody>
+      </table>
     </div>:<p>No Feedback Given</p>
     }
   </div>
