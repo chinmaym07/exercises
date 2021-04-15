@@ -1,5 +1,21 @@
 import React, { useState } from 'react'
 
+const SearchComponent = ({handleSearch,search}) =>(
+  <p>filter shown with : <input type="text" onChange={handleSearch} value={search} name="search"/></p>
+)
+
+const AddANewPersonConponent = ({handleChange,newPerson,handleSubmit})=> (
+  <form>
+    <div>
+      name: <input type="text" onChange={handleChange} value={newPerson.name} name="name"/>
+    </div>
+    <div>number: <input type="text" onChange={handleChange} value={newPerson.number} name="number" /></div>
+    <div>
+      <button type="submit" onClick={handleSubmit}>add</button>
+    </div>
+  </form>
+)
+
 const App = () => {
   const [ persons, setPersons ] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -49,17 +65,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      filter shown with : <input type="text" onChange={handleSearch} value={search} name="search"/>
+      <SearchComponent handleSearch={handleSearch} search={search} />
       <h1>Add a New</h1>
-      <form>
-        <div>
-          name: <input type="text" onChange={handleChange} value={newPerson.name} name="name"/>
-        </div>
-        <div>number: <input type="text" onChange={handleChange} value={newPerson.number} name="number" /></div>
-        <div>
-          <button type="submit" onClick={handleSubmit}>add</button>
-        </div>
-      </form>
+      <AddANewPersonConponent handleChange={handleChange} handleSubmit={handleSubmit} newPerson={newPerson}/>
       <h2>Numbers</h2>
       {
         search ? (filteredPerson.length > 0 ? filteredPerson.map(person => <p key={person.name}>{person.name} {person.number}</p>) : <p>No Item Found</p>)
