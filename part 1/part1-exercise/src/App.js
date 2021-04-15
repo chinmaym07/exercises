@@ -9,15 +9,28 @@ const App = () => {
   const handleChange = (e) => {
     setNewName(e.target.value);
   }
-  
+  const checkPresence= (obj)=> {
+    for(let i = 0 ; i < persons.length;i++)
+    {
+      if(persons[i].name === obj.name)
+        return true;
+    }
+    return false;
+  }
   const handleSubmit = (e)=>{
     e.preventDefault();
-
-    let newobj = {
+    
+    let newObj = {
       name: newName
     };
-    setPersons(persons.concat(newobj));
-    setNewName('');
+    if(checkPresence(newObj)){
+      alert(`${newName} is already added to phonebook`)
+    }
+    else{
+      setPersons(persons.concat(newObj));
+      setNewName('');
+    }
+    
   }
 
   return (
