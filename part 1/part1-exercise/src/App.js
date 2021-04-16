@@ -1,5 +1,6 @@
 import React, { useState ,useEffect } from 'react'
-import axios from 'axios';
+import serverCom from './serverCom';
+
 
 const SearchComponent = ({handleSearch,search}) =>(
   <p>filter shown with : <input type="text" onChange={handleSearch} value={search} name="search"/></p>
@@ -24,9 +25,9 @@ const App = () => {
   const [search, setSearch] = useState('');
 
   useEffect(()=>{
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => setPersons(response.data))
+    serverCom
+    .getAll()
+    .then(data => setPersons(data))
   },[])
 
   const handleChange = (e) => {
@@ -34,7 +35,6 @@ const App = () => {
     console.log(e.target.value);
     setNewPerson({
       ...newPerson,
-      id:persons.length()+1,
       [e.target.name] : e.target.value
     });
   }
@@ -59,6 +59,9 @@ const App = () => {
       alert(`${newPerson.name} is already added to phonebook`)
     }
     else{
+      serverCom
+      .create(newPerson)
+      .then(data=>console.log(data));
       setPersons(persons.concat(newPerson));
       setNewPerson({name:'',number:''});
     }
