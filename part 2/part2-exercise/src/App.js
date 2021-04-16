@@ -17,37 +17,64 @@ const CountryInfo = ({country}) => {
         }
         </ul>
         <div>
-          <img src={country.flag} alt="flag" width="100px"/>
+          <img src={country.flag} alt="flag" width="150px" height="150px"/>
         </div>
       </div>
     )
 }
+
+const CountryLessInfo = ({country,handleShow ,ind})=>{
+  return (
+    <div>
+      <p>{country.name}</p>
+      <button id={ind} onClick={handleShow} >Show</button>
+    </div>
+  )
+}
+
 
 const App = () => {
   const [countries,setCountries] = useState([]);
   const [search,setSearch] = useState('');
   const [filteredArr,setFiteredArr] = useState([]);
   const [message,setMessage] = useState('');
+  const [selectedElem,setSelectedElem] = useState(null);
+
+
+  const handleShow = (e) => {
+    setSelectedElem(filteredArr[e.target.id])
+  }
+
   const handleChange = (e) => {
     setSearch(e.target.value);
-    
+    setSelectedElem(null);
   }
   
   const handleSubmit = (e) =>{
-    const arr = countries.filter(country => country.name.toLowerCase().includes(search.toLowerCase()));
-    if(arr.length > 10)
+    if(search !== '')
     {
-      setMessage('Too Many Matches, Specify Another filter');
-      setFiteredArr([]);
+      const arr = countries.filter(country => country.name.toLowerCase().includes(search.toLowerCase()));
+      if(arr.length > 10)
+      {
+        setMessage('Too Many Matches, Specify Another filter');
+        setFiteredArr([]);
+        setSelectedElem(null);
+      }
+      else
+      {
+        setFiteredArr(arr);
+        setMessage('');
+        setSelectedElem(null);
+      }
     }
-      
     else
     {
-      setFiteredArr(arr);
+      setFiteredArr([]);
       setMessage('');
-    }
-      
+      setSelectedElem(null);
+    } 
   }
+
   useEffect(()=> {
     axios
     .get('https://restcountries.eu/rest/v2/all')
@@ -69,12 +96,14 @@ const App = () => {
       }
       <div>
         {
-          filteredArr.length > 1 ? filteredArr.map((country,i) => <p key={i}>{country.name}</p>):null
+          filteredArr.length > 1 ? filteredArr.map((country,i) => <CountryLessInfo handleShow={handleShow} country={country} key={i} ind={i}/>):null
         }
         {
           filteredArr.length === 1  ? <CountryInfo country={filteredArr[0]}/>:null
         }
-        
+        {
+          selectedElem != null ? <CountryInfo country={selectedElem}/> : null
+        } 
       </div>
     </div>
   );
