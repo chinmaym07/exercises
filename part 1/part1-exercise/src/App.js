@@ -63,17 +63,30 @@ const App = () => {
   const checkPresence= (obj)=> {
     for(let i = 0 ; i < persons.length;i++)
     {
-      if(persons[i].name === obj.name)
-        return true;
+      if(persons[i].name === obj.name && persons[i].number !== obj.number)
+        return persons[i].id;
     }
-    return false;
+    return null;
   }
   
   const handleSubmit = (e)=>{
     e.preventDefault();
-    
-    if(checkPresence(newPerson)){
-      alert(`${newPerson.name} is already added to phonebook`)
+    let id = checkPresence(newPerson);
+    if(id !== null){
+        let val = window.confirm(`${newPerson.name} is already added to phonebook,replace the old number with a new one`);
+        if(val)
+        {
+          let newObj = {
+            id,
+            ...newPerson
+          }
+          serverCom
+          .update(id,newObj)
+          .then(data => setPersons(persons.map(person => person.id !== id ? person : data)));
+          setNewPerson({name:'',number:''});    
+        }
+          
+      
     }
     else{
       serverCom
