@@ -6,6 +6,17 @@ const SearchComponent = ({handleSearch,search}) =>(
   <p>filter shown with : <input type="text" onChange={handleSearch} value={search} name="search"/></p>
 )
 
+const Person = ({person,handleDelete})=>{
+
+  return (
+  <div>
+    <p key={person.id}>{person.name} {person.number}</p>
+    <button onClick={()=> handleDelete(person.id)}>delete</button>
+  </div>
+  )
+}
+
+
 const AddANewPersonConponent = ({handleChange,newPerson,handleSubmit})=> (
   <form>
     <div>
@@ -30,6 +41,12 @@ const App = () => {
     .then(data => setPersons(data))
   },[])
 
+  const handleDelete = (id)=> {
+    serverCom
+    .deletePerson(id)
+    .then(data => console.log(data));
+    setPersons(persons.filter(person => person.id !== id))
+  }
   const handleChange = (e) => {
     console.log(e.target.name);
     console.log(e.target.value);
@@ -61,8 +78,8 @@ const App = () => {
     else{
       serverCom
       .create(newPerson)
-      .then(data=>console.log(data));
-      setPersons(persons.concat(newPerson));
+      .then(data=>setPersons(persons.concat(data)));
+      
       setNewPerson({name:'',number:''});
     }
     
@@ -76,9 +93,9 @@ const App = () => {
       <AddANewPersonConponent handleChange={handleChange} handleSubmit={handleSubmit} newPerson={newPerson}/>
       <h2>Numbers</h2>
       {
-        search ? (filteredPerson.length > 0 ? filteredPerson.map(person => <p key={person.name}>{person.name} {person.number}</p>) : <p>No Item Found</p>)
+        search ? (filteredPerson.length > 0 ? filteredPerson.map(person => <Person key={person.id} person={person} handleDelete={handleDelete}/>) : <p>No Item Found</p>)
         :
-        persons.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+        persons.map(person =>  <Person key={person.id} person={person} handleDelete={handleDelete} />)
       }
     </div>
   )
