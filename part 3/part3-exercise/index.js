@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json());
 
 let persons =[
     {
@@ -45,6 +46,42 @@ app.get('/api/persons/:id',(req,res)=>{
         res.json(person);
     else
         res.status(404).end(`<p>No Element Found with id ${id} !!</p>`);
+})
+
+app.post('/api/persons',(req,res)=>{
+    const getNewObjId = ()=> {
+       const maxId =  persons.length > 0
+        ? Math.max(...persons.map(n => n.id)) 
+        : 0
+        return maxId+1;
+    }
+    let body = req.body;
+    if (!body.name || !body.number) {
+        if (!body.name && !body.number) {
+            return res.status(400).json({ 
+            error: 'name & number missing' 
+            })
+        }
+        if (!body.name) {
+            return res.status(400).json({ 
+            error: 'name missing' 
+            })
+        }
+        if (!body.number) {
+            return res.status(400).json({ 
+              error: 'number missing' 
+            })
+        }
+    }
+    
+    
+    const newObj = {
+        id:getNewObjId(),
+        name:body.name,
+        number:body.number
+    }
+    persons = persons.concat(newObj);
+    res.json(newObj);
 })
 
 app.delete('/api/persons/:id',(req,res)=> {
