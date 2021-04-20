@@ -55,6 +55,10 @@ app.post('/api/persons',(req,res)=>{
         : 0
         return maxId+1;
     }
+    const checkPresence = (name)=> {
+        let val = persons.find(pers => pers.name === name);
+         return val;
+     }
     let body = req.body;
     if (!body.name || !body.number) {
         if (!body.name && !body.number) {
@@ -72,6 +76,11 @@ app.post('/api/persons',(req,res)=>{
               error: 'number missing' 
             })
         }
+    }
+    if(!checkPresence(body.name)){
+        return res.status(400).json({ 
+            error: 'name must be unique' 
+          })
     }
     
     
