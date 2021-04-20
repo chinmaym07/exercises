@@ -26,9 +26,11 @@ let persons =[
 ];
 
 
-app.get('/',(req,res)=>{
-    res.writeHead(200,{'Content-Type':'text/plain'});
-    res.end('Hello World');
+app.get('/info',(req,res)=>{
+    res.writeHead(200,{'Content-Type':'text/html'});
+    let dt = new Date();
+    let html = `<div><p>PhoneBook has info for ${persons.length} people</p><p>${dt}</p></div>`
+    res.end(html);
 })
 app.get('/api/persons',(req,res)=>{
     res.writeHead(200, { 'Content-Type': 'application/json' });
