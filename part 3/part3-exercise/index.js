@@ -1,6 +1,6 @@
 const express = require('express');
-
 const app = express();
+
 
 let persons =[
     {
@@ -32,9 +32,19 @@ app.get('/info',(req,res)=>{
     let html = `<div><p>PhoneBook has info for ${persons.length} people</p><p>${dt}</p></div>`
     res.end(html);
 })
+
 app.get('/api/persons',(req,res)=>{
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(persons));
+    res.json(persons);
+})
+
+app.get('/api/persons/:id',(req,res)=>{
+    let id = Number(req.params.id);
+    let person = persons.find(person => person.id === id);
+
+    if(person)
+        res.json(person);
+    else
+        res.status(404).end(`<p>No Element Found with id ${id} !!</p>`);
 })
 
 const PORT = 3001
