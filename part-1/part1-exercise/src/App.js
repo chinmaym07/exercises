@@ -131,8 +131,8 @@ const App = () => {
         console.log(`Added ${newPerson.name}`)
         setTypeNotifMessage(1);
       })
-      .catch(error => {
-        setNotifMessage(error.message)
+      .catch(err => {
+        setNotifMessage(err.response.data.error)
         setTypeNotifMessage(-1);
       })
       setTimeout(() => {
