@@ -56,7 +56,7 @@ app.post('/api/persons',(req,res,next) => {
     let body = req.body;
 
     
-    Person.find({"name":body.name}).then(result =>{
+    /* Person.find({"name":body.name}).then(result =>{
         console.log(result);
         if(result.length > 1)
             res.json({error:"Many Users have same name"});
@@ -75,7 +75,7 @@ app.post('/api/persons',(req,res,next) => {
             .catch(error => next(error))
         }
         else
-        {
+        { */
             const newPersonsObj = new Person({
                 name: body.name,
                 number: body.number
@@ -84,14 +84,14 @@ app.post('/api/persons',(req,res,next) => {
             .save()
             .then(result => res.json(result))
             .catch(error=> next(error));
-        }
+/*         }
     }).catch(error=> {
         console.log(error)
         res.json({ 
             error:error.message
         })
         return;
-    });
+    }); */
 })
 
 app.delete('/api/persons/:id',(req,res,next)=> {
