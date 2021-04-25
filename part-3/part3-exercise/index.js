@@ -55,26 +55,12 @@ app.post('/api/persons',(req,res,next) => {
 
     let body = req.body;
 
-    if (!body.name || !body.number) {
-        if (!body.name && !body.number) {
-            return res.status(400).json({ 
-            error: 'name & number missing' 
-            })
-        }
-        if (!body.name) {
-            return res.status(400).json({ 
-            error: 'name missing' 
-            })
-        }
-        if (!body.number) {
-            return res.status(400).json({ 
-              error: 'number missing' 
-            })
-        }
-    }
+    
     Person.find({"name":body.name}).then(result =>{
         console.log(result);
-        if(result)
+        if(result.length > 1)
+            res.json({error:"Many Users have same name"});
+        else if(result.length == 1)
         { 
             let id = result[0]._id.toString();
             let personObj={
@@ -143,7 +129,9 @@ const errorHandler = (error, request, response, next) => {
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
-    } 
+    } else if(error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    }
     next(error)
   }
 
