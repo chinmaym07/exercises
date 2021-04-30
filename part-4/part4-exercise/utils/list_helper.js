@@ -20,8 +20,38 @@ const favoriteBlog = (blogs) => {
     return favrBlog == 0 ? {} : blogs.find(blog => blog.likes == favrBlog);
 };
 
+const mostBlogs = (blogs) => {
+    if(blogs.length === 0)
+        return {};
+    else 
+    { 
+        let mp = new Map();
+        blogs.map(blog =>{
+            if(!mp.has(blog.author))
+                mp.set(blog.author,1);
+            else
+                mp.set(blog.author,mp.get(blog.author)+1);
+        });
+        let mx = 0,obj={};
+
+        for (let [author,cnt] of mp.entries()) {
+            if(cnt > mx)
+            {
+                mx = cnt;
+                obj = {
+                    author:author,
+                    blogs:cnt
+                }
+            }
+        }
+        return obj;
+    }
+
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 };
