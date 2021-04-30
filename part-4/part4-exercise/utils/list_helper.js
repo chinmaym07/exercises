@@ -46,12 +46,41 @@ const mostBlogs = (blogs) => {
         }
         return obj;
     }
-
 }
+
+const mostLikesOnAnAuthorBlog = (blogs) => {
+    if(blogs.length === 0)
+        return {};
+    else 
+    { 
+        let mp = new Map();
+        blogs.map(blog =>{
+            if(!mp.has(blog.author))
+                mp.set(blog.author,blog.likes);
+            else
+                mp.set(blog.author,mp.get(blog.author)+blog.likes);
+        });
+        let mx = 0,obj={};
+
+        for (let [author,likes] of mp.entries()) {
+            if(likes > mx)
+            {
+                mx = likes;
+                obj = {
+                    author:author,
+                    likes:likes
+                }
+            }
+        }
+        return obj;
+    }
+}
+
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikesOnAnAuthorBlog
 };
