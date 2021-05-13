@@ -9,7 +9,8 @@ const mongoUrl = config.MONGO_DB_URI;
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 .then(result => {
-  console.log('connected to MongoDB');
+  if(process.env.NODE_ENV !== 'test')
+    console.log('connected to MongoDB');
 })
 .catch((error) => {
   console.error('error connecting to MongoDB:', error.message);

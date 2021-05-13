@@ -4,14 +4,14 @@
   "description": "backend for the project",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf build && cd ../../part-1/part1-exercise/ && npm run build --prod && cp -r build ../../part-3/part3-exercise/ ",
     "deploy": "git push heroku HEAD:master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "author": "",
   "license": "ISC",
