@@ -1,11 +1,9 @@
-const { after } = require('lodash');
+
 const mongoose = require('mongoose');
-const supertest = require('supertest');
-const app = require('../app');
+const api = require('./test_config');
 const helper = require('./test_helper');
-const api = supertest(app);
 const Blog = require('../models/blogs');
-const { application } = require('express');
+
 
 
 
@@ -82,7 +80,18 @@ describe('viewing a specific Blog', () => {
     });
 });
 describe('addition of a new blog', () => {
+    
     test('a valid blog can be added !!' , async() => {
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+        
         const newTestBlog = {
             "title":"Type wars",
             "author":"Robert C. Martin",
@@ -92,6 +101,7 @@ describe('addition of a new blog', () => {
         await api
         .post('/api/blogs')
         .send(newTestBlog)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(201)
         .expect('Content-Type',/application\/json/);
         
@@ -104,8 +114,42 @@ describe('addition of a new blog', () => {
         expect(titles).toContain(newTestBlog.title);
 
     });
+    test('a valid blog can not be added if Authorization token is not provided !!' , async() => {
+        
+        const newTestBlog = {
+            "title":"Type wars",
+            "author":"Robert C. Martin",
+            "url":"http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+            "likes":2
+        }
+        await api
+        .post('/api/blogs')
+        .send(newTestBlog)
+        .set('Authorization', 'bearer ')
+        .expect(401)
+        .expect('Content-Type',/application\/json/);
+        
+
+        const allBlogs = await helper.blogsInDb();
+        const titles = allBlogs.map(blog => blog.title);
+        
+        expect(allBlogs).toHaveLength(helper.initialBlogs.length);
+
+        expect(titles).not.toContain(newTestBlog.title);
+
+    });
 
     test('Blog without title cannot be inserted',async () =>{
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+
         const newTestBlog = {
             "author":"Robert C. Martin",
             "url":"http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
@@ -114,6 +158,7 @@ describe('addition of a new blog', () => {
         await api
         .post('/api/blogs')
         .send(newTestBlog)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(400)
 
         const allBlogs = await helper.blogsInDb();
@@ -122,6 +167,16 @@ describe('addition of a new blog', () => {
 
 
     test('Blog without Author cannot be inserted',async () =>{
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+        
         const newTestBlog = {
             "title":"Type wars",
             "url":"http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
@@ -130,6 +185,7 @@ describe('addition of a new blog', () => {
         await api
         .post('/api/blogs')
         .send(newTestBlog)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(400)
 
         const allBlogs = await helper.blogsInDb();
@@ -138,6 +194,16 @@ describe('addition of a new blog', () => {
 
 
     test('Blog without url cannot be inserted',async () =>{
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+
         const newTestBlog = {
             "title":"Type wars",
             "author":"Robert C. Martin",
@@ -146,6 +212,7 @@ describe('addition of a new blog', () => {
         await api
         .post('/api/blogs')
         .send(newTestBlog)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(400)
 
         const allBlogs = await helper.blogsInDb();
@@ -153,6 +220,16 @@ describe('addition of a new blog', () => {
     });
 
     test('Blog without likes can be inserted & likes will be assigned a default values of 0',async () =>{
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+
         const newTestBlog = {
             "title":"Type wars",
             "author":"Robert C. Martin",
@@ -161,6 +238,7 @@ describe('addition of a new blog', () => {
         await api
         .post('/api/blogs')
         .send(newTestBlog)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(201)
         .expect('Content-Type',/application\/json/);
 
@@ -175,36 +253,85 @@ describe('addition of a new blog', () => {
 describe('deletion of a blog', () => {
 
     test('a specific blog can be deleted',async () => {
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+
+        const insertBlogToDelete = {
+            "title":"First class tests",
+            "author":"Robert C. Martin",
+            "url":"http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+            "likes":10
+        }
+        let newBlogToDeleteResult = await api
+        .post('/api/blogs')
+        .send(insertBlogToDelete)
+        .set('Authorization', 'bearer '+result.body.token)
+        .expect(201)
+        .expect('Content-Type',/application\/json/);
+        
+
         let blogsAtStart = await helper.blogsInDb();
-        let blogToDelete = blogsAtStart[0];
-        let id = blogToDelete._id;
+        let id = newBlogToDeleteResult.body._id;
 
-        await api
+        
+        let res = await api
         .delete(`/api/blogs/${id}`)
-        .expect(204)
+        .set('Authorization', 'bearer '+result.body.token)
+        .expect(200)
 
+        
         let blogsAtEnd = await helper.blogsInDb();
         expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1 );
 
+        expect(res.body.message).toBe('Blog Deleted!!');
+        
         let titles = blogsAtEnd.map(blog => blog.title);
 
-        expect(titles).not.toContain(blogToDelete.title);
+        expect(titles).not.toContain(insertBlogToDelete.title);
         
     });
     test('Deletion Fails with status code 404 if blog does not exist', async ()=>{
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+
         const validNonexistingId = await helper.nonExistingId();
         let resp = await api
         .delete(`/api/blogs/${validNonexistingId}`)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(404);
         
         expect(resp.body.message).toBe("Not Found");
     });
 
     test('Deletion Fails with status code 400 if id is invalied', async() => {
+        const newUser = {
+            username:"rootuser",
+            password: 'sekret'
+        };
+
+        
+        let result = await api
+        .post('/api/login')
+        .send(newUser);
+
         const invalidId = '5a3d5da59070081a82a3445'
 
         await api
         .delete(`/api/blogs/${invalidId}`)
+        .set('Authorization', 'bearer '+result.body.token)
         .expect(400);
         
     });
