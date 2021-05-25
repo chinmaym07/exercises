@@ -1,0 +1,21 @@
+.post-notif{
+    color:green;
+    border:2px solid green;
+    background: lightgrey;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .neg-notif{
+    color: red;
+    background: lightgrey;
+    border:2px solid red;
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+    
+    
+  
