@@ -28,7 +28,7 @@ blogRouter.post('/', userExtractor , async (request, response) => {
   });
   const userObj = await User.findById(user.id);
   try{
-    const result = await blog.save()
+    const result = await blog.save();
     userObj.blogs = userObj.blogs.concat(result._id);
     await userObj.save();
     response.status(201).json(result)
@@ -83,8 +83,16 @@ blogRouter.delete('/:id', userExtractor ,async (request, response) => {
 
 blogRouter.put('/:id',async (request,response) => {
   let id = request.params.id;
+  let blogToUpdate = {
+    likes: request.body.likes,
+    author: request.body.author,
+    url: request.body.url,
+    title: request.body.title,
+    user:  request.body.user.id
+  }
   try{
-    const newUpdatedBlog = await Blog.findByIdAndUpdate(id,request.body)
+    const newUpdatedBlog = await Blog.findByIdAndUpdate(id,blogToUpdate,{ new: true });
+
     response.status(200).json(newUpdatedBlog);
   }
   catch(err){

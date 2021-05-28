@@ -1,16 +1,27 @@
-import React from 'react'
+import React from "react";
 import "./blog,styles.css";
 
-const Blog = ({blog}) => (
-  <div className="blog-cont">
-    <a href={blog.url}>
+const Blog = ({ blog, id, toggleActive, isOpen, index, onLiked, deleteBlog, deleteBlogBtn }) => {
+  return (
+    <div className="blog-cont">
       <div className="blog-head">
-        <h2>{blog.title}</h2>
-        <p>{blog.author}</p>
+        <h2>{blog.title}-{blog.author}</h2>
       </div>
-      <p>{blog.likes} Likes</p>
-    </a>
-  </div>  
-)
+      <button onClick={() => toggleActive(index)}>{ isOpen && id === index ? "hide" : "Show"}</button>
+      {
+        isOpen && id === index ?
+          <div>
+            <p>{blog.likes} Likes <button onClick={() => onLiked(blog)}>Like</button></p>
+            <p>{blog.url}</p>
+            {
+              deleteBlogBtn ? <button onClick={() => deleteBlog(blog)}>Delete</button> : null
+            }
+          </div>
+          :
+          null
+      }
+    </div>
+  );
+};
 
 export default Blog;
