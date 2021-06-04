@@ -1,25 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import "./blog,styles.css";
 
-const Blog = ({ blog, id, toggleActive, isOpen, index, onLiked, deleteBlog, deleteBlogBtn }) => {
+const Blog = ({ blog, onLiked, deleteBlog, deleteBlogBtn }) => {
+  const [visible, setVisible] = useState(false);
+  const toggleActive = () => {
+    setVisible(!visible);
+  };
+  const contentStyle = { "display": visible ? "block" : "none" };
   return (
     <div className="blog-cont">
       <div className="blog-head">
-        <h2>{blog.title}-{blog.author}</h2>
+        <h2>{blog.title}</h2>
+        <p>{blog.author}</p>
       </div>
-      <button onClick={() => toggleActive(index)}>{ isOpen && id === index ? "hide" : "Show"}</button>
-      {
-        isOpen && id === index ?
-          <div>
-            <p>{blog.likes} Likes <button onClick={() => onLiked(blog)}>Like</button></p>
-            <p>{blog.url}</p>
-            {
-              deleteBlogBtn ? <button onClick={() => deleteBlog(blog)}>Delete</button> : null
-            }
-          </div>
-          :
-          null
-      }
+      <button className="open-close-btn" onClick={toggleActive}>{visible ? "hide" : "Show"}</button>
+      <div className="otherContent" style={contentStyle} >
+        <p>{blog.likes} Likes</p>
+        <p>{blog.url}</p>
+        <button onClick={() => onLiked(blog)}>Like</button>
+        {
+          deleteBlogBtn ? <button onClick={() => deleteBlog(blog)}>Delete</button> : null
+        }
+      </div>
     </div>
   );
 };

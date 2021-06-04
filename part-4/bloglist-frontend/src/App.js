@@ -14,25 +14,8 @@ const App = () => {
   const [notifMessage, setNotifMessage] = useState("");
   const [notifMessageStatus, setNotifMessageStatus] = useState(0);
   const blogFormRef = useRef();
-  const [isOpen, setIsOpen] = useState(false);
-  const [ID, setID] = useState(-1);
 
-  const toggleActive = (id) => {
-    //console.log(id);
-    if(isOpen){
-      if(ID === id){
-        setIsOpen(false);
-        setID(-1);
-      } else{
-        setIsOpen(false);
-        setID(id);
-        setIsOpen(true);
-      }
-    } else{
-      setID(id);
-      setIsOpen(true);
-    }
-  };
+
   const fetchBlogs = async () => {
     let allBlogs = await blogService.getAll();
     allBlogs.sort((a,b) => a.likes-b.likes);
@@ -135,7 +118,7 @@ const App = () => {
           <div className="blogs-container">
             {
               blogs.map((blog,index) =>
-                <Blog key={index} blog={blog} id={ID} toggleActive={toggleActive} isOpen={isOpen} index={index} onLiked={onLiked} deleteBlog={deleteBlog} deleteBlogBtn={blog.user.username === user.username}/>
+                <Blog key={index} blog={blog} onLiked={onLiked} deleteBlog={deleteBlog} deleteBlogBtn={blog.user.username === user.username}/>
               )
             }
           </div>
